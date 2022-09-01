@@ -1,0 +1,107 @@
+volumes:
+  people-common:
+  people-db:
+services:
+  mosquitto:
+    image: quay.io/nilvana/mosquitto:latest
+    ports:
+      - "53005:1883"
+      - "53006:9001"
+    restart: on-failure:5
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "7"
+          max-size: "10m"
+  timescaledb:
+    image: quay.io/nilvana/timescaledb:2.7.2-pg14
+    volumes:
+      - "people-db:/var/lib/postgresql/data"
+    restart: on-failure:5
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "7"
+          max-size: "10m"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+  fp:
+    image: quay.io/nilvana/people-counting:1.0.0-fp-jp46
+    ports:
+      - "53001:8080"
+    volumes:
+      - "people-common:/tmp"
+      - "/tmp/argus_socket:/tmp/argus_socket"
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            capabilities: [gpu, utility, compute]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    restart: on-failure:5
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "7"
+        max-size: "10m"
+  infer:
+    image: quay.io/nilvana/people-counting:1.0.0-infer-jp46-nano
+    privileged: true
+    depends_on:
+      - mosquitto
+    volumes:
+      - "$PWD:/license"
+      - "people-common:/tmp"
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            capabilities: [gpu, utility, compute]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    restart: on-failure:5
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "7"
+        max-size: "10m"
+  rule:
+    image: quay.io/nilvana/people-counting:1.0.0-rule-jp46
+    privileged: true
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      mosquitto:
+        condition: service_started
+    ports:
+      - "53002:80"
+    volumes:
+      - "$PWD:/license"
+      - "people-common:/tmp"
+    environment:
+      - TIMEZONE=Asia/Taipei
+    restart: on-failure:5
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "7"
+        max-size: "10m"
+  ui:
+    image: quay.io/nilvana/people-counting:1.0.0-ui-arm64
+    ports:
+      - "53000:80"
+    depends_on:
+      - fp
+      - rule
+      - mosquitto
+    environment:
+      - VERSION=1.0.0
+    restart: on-failure:5
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "7"
+        max-size: "10m"
