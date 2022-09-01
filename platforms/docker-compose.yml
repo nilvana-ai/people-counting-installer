@@ -7,7 +7,7 @@ services:
     ports:
       - "53005:1883"
       - "53006:9001"
-    restart: on-failure:5
+    restart: always
     logging:
       driver: "json-file"
       options:
@@ -17,7 +17,7 @@ services:
     image: quay.io/nilvana/timescaledb:2.7.2-pg14
     volumes:
       - "people-db:/var/lib/postgresql/data"
-    restart: on-failure:5
+    restart: always
     logging:
       driver: "json-file"
       options:
@@ -31,7 +31,7 @@ services:
       - "53001:8080"
     volumes:
       - "people-common:/tmp"
-    restart: on-failure:5
+    restart: always
     logging:
       driver: "json-file"
       options:
@@ -52,7 +52,7 @@ services:
             capabilities: [gpu, utility, compute]
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
-    restart: on-failure:5
+    restart: always
     logging:
       driver: "json-file"
       options:
@@ -72,7 +72,7 @@ services:
       - "people-common:/tmp"
     environment:
       - TIMEZONE=Asia/Taipei
-    restart: on-failure:5
+    restart: always
     logging:
       driver: "json-file"
       options:
@@ -88,7 +88,7 @@ services:
       - mosquitto
     environment:
       - VERSION=1.0.0
-    restart: on-failure:5
+    restart: always
     logging:
       driver: "json-file"
       options:
