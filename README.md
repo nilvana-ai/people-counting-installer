@@ -12,6 +12,10 @@ Execute the following command on your device:
 
 `bash <(curl -fsSL https://links.nilvana.ai/get-pc)`
 
+## FAQ
+
+- I can't find `cur`l on my device. Please follow the instructions: `sudo apt-get update && sudo apt-get install -y curl`
+
 ## Social Media
 
 - [Official Website](https://nilvana.ai)
