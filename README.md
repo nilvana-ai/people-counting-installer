@@ -8,7 +8,9 @@ Nilvana™ provides a wide range of services from consulting and model creation 
 
 ## Get Started
 
-`curl -sSL https://links.nilvana.ai/get-pc | bash -`
+Execute the following command on your device:
+
+`bash <(curl -fsSL https://links.nilvana.ai/get-pc)`
 
 ## Social Media
 
