@@ -8,7 +8,7 @@ Nilvana™ provides a wide range of services from consulting and model creation 
 
 ## Get Started
 
-TBD
+`curl -sSL https://links.nilvana.ai/get-pc | bash -`
 
 ## Social Media
 
