@@ -14,7 +14,7 @@ Execute the following command on your device:
 
 ## FAQ
 
-- I can't find `cur`l on my device. Please follow the instructions: `sudo apt-get update && sudo apt-get install -y curl`
+- I can't find `curl` on my device. Please follow the instructions: `sudo apt-get update && sudo apt-get install -y curl`
 
 ## Social Media
 
